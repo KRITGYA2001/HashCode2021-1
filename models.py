@@ -56,26 +56,6 @@ class City:
             lines.append(str(len(intersection.incoming_streets)))
             for key in intersection.incoming_streets:
                 lines.append(f"{key} 1")
-        with open(f"{test_case}.out", "w") as out:
-            out.writelines(lines)
+        with open(f"{self.test_case}.out", "w") as out:
+            out.write("\n".join(lines))
             
-            
-    def draw(self):
-        nx.draw(self.G, with_labels=True)
-        plt.show()
-        
-    def simulate(self):
-        for step in range(self.steps):
-
-            for key, inter in self.intersections.items():
-                inter.set_green(step)
-
-            for key, car in self.state.items():
-
-                current_street_name = self.paths[key][car.street_index]
-                current_street_end = self.streets[current_street_name]['to']
-
-                if car.time_left == 0 and self.intersections[current_street_end].incoming_streets[current_street_name]:
-
-                    car.street_index += 1
-                    car.time_left = self.streets[self.paths[key][car.street_index]]['length']
