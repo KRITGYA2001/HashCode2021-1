@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 @dataclass
 class CarState:
-    street: str
+    street_index: int
     time_left: int
 
 @dataclass
@@ -19,25 +19,23 @@ class Intersection:
         self.incoming_streets[turn_off] = False
         self.incoming_streets[turn_on] = True
 
-# @dataclass
-class City:
-    # G: nx.DiGraph
-    # state: Dict[int, CarState]
-    # intersections: Dict[int, Intersection]
-    # streets: Dict[str, Dict[str, int]]
 
-    steps = 0
-    G = nx.DiGraph()
-    state = {}
-    intersections = {}
-    streets = {}
+class City:
+
+
 
     def __init__(self, steps, streets, number_of_intersections, paths):
 
         self.steps = steps
+        self.paths = paths
+        self.streets = streets
+        self.state = {}
+        self.intersections = {}
+        self.G = nx.DiGraph()
 
         for car, path in paths.items():
-            self.state[car] = CarState(path[0], 0)
+            self.state[car] = CarState(0, 0)
+
         
         for inter in range(number_of_intersections):
             self.intersections[inter] = Intersection()
@@ -60,4 +58,14 @@ class City:
 
             for key, inter in self.intersections.items():
                 inter.set_green(step)
+
+            for key, car in self.state.items():
+
+                current_street_name = self.paths[key][car.street_index]
+                current_street_end = self.streets[current_street_name]['to']
+
+                if car.time_left == 0 and self.intersections[current_street_end].incoming_streets[current_street_name]:
+
+                    car.street_index += 1
+                    car.time_left = self.streets[self.paths[key][car.street_index]]['length']
 
