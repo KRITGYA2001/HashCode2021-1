@@ -13,23 +13,25 @@ class Intersection:
     incoming_streets: Dict[str, bool] = field(default_factory=dict)
     
         
-@dataclass
+# @dataclass
 class City:
-    G: nx.DiGraph
-    state: Dict[int, CarState]
-    intersections: Dict[int, Intersection]
-    streets: Dict[str, Dict[str, int]]
-    
-    def __init__(self, 
-                 streets: Dict[str, Dict[str, int]], 
-                 intersections: int, 
-                 paths: Dict[int, List[str]]):
-        self.state = {}
-        self.G = nx.DiGraph()
+    # G: nx.DiGraph
+    # state: Dict[int, CarState]
+    # intersections: Dict[int, Intersection]
+    # streets: Dict[str, Dict[str, int]]
+
+    G = nx.DiGraph()
+    state = {}
+    intersections = {}
+    streets = {}
+
+    def __init__(self, streets, number_of_intersections, paths):
+
+
         for car, path in paths.items():
             self.state[car] = CarState(path[0], 0)
         
-        for inter in range(intersections):
+        for inter in range(number_of_intersections):
             self.intersections[inter] = Intersection()
         
         for street_name, street in streets.items():
