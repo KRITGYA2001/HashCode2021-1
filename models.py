@@ -22,9 +22,7 @@ class Intersection:
 
 class City:
 
-
-
-    def __init__(self, steps, streets, number_of_intersections, paths):
+    def __init__(self, steps, streets, number_of_intersections, paths, test_case):
 
         self.steps = steps
         self.paths = paths
@@ -32,6 +30,7 @@ class City:
         self.state = {}
         self.intersections = {}
         self.G = nx.DiGraph()
+        self.test_case = test_case
 
         for car, path in paths.items():
             self.state[car] = CarState(0, 0)
@@ -48,6 +47,18 @@ class City:
             
         for node in self.G.nodes:
             self.G.nodes[node]["inter"] = self.intersections[node]
+            
+            
+    def output(self):
+        lines = [str(len(self.intersections))]
+        for key, intersection in self.intersections.items():
+            lines.append(str(key))
+            lines.append(str(len(intersection.incoming_streets)))
+            for key in intersection.incoming_streets:
+                lines.append(f"{key} 1")
+        with open(f"{test_case}.out", "w") as out:
+            out.writelines(lines)
+            
             
     def draw(self):
         nx.draw(self.G, with_labels=True)
@@ -68,4 +79,3 @@ class City:
 
                     car.street_index += 1
                     car.time_left = self.streets[self.paths[key][car.street_index]]['length']
-
